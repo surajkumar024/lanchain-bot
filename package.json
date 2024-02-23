@@ -6,12 +6,13 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"node bot.js"
+    "start": "node bot.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@huggingface/inference": "^2.6.4",
     "@langchain/community": "^0.0.32",
     "@langchain/openai": "^0.0.14",
     "dotenv": "^16.4.5",

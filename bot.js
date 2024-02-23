@@ -4,6 +4,9 @@ import {OpenAIEmbeddings} from 'langchain/embeddings/openai';
 import {HNSWLib} from 'langchain/vectorstores/hnswlib';
 import {OpenAI} from 'langchain/llms/openai';
 import {RetrievalQAChain} from 'langchain/chains';
+import {H} from 'langchain/llms/hf'
+import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -20,25 +23,39 @@ const textSplitter = new RecursiveCharacterTextSplitter({
 });
 // creating chunks from pdf
 const splitDocs = await textSplitter.splitDocuments(docs);
-const embeddings = new OpenAIEmbeddings();
+// const embeddings = new OpenAIEmbeddings(); // OPENAPI
+
+const embeddings = new HuggingFaceInferenceEmbeddings();
 
 const vectorStore = await HNSWLib.fromDocuments(
     splitDocs, embeddings
 )
 
 const vectoreStoreRetriver = vectorStore.asRetriever();
-const model = new OpenAI({
-    modelName:'gpt-3.5-turbo'
-});
 
-const chain = RetrievalQAChain.fromLLM(model, vectoreStoreRetriver);
+// const model = new OpenAI({
+//     modelName:'gpt-3.5-turbo'
+// }); //// FOR OPEN_API MODELS
 
-const question = 'what is node js?';
-const answer = await chain.call({
-    query:question
-})
+const model = new HuggingFaceTransformersEmbeddings({
+    modelName: "hkunlp/instructor-large",
+  });
 
-console.log(
-    question,
-    answer
-)
+
+const res = await model.embedQuery(
+    "what is node js?"
+  );
+
+  console.log({ res });
+
+// const chain = RetrievalQAChain.fromLLM(model, vectoreStoreRetriver);
+
+// const question = 'what is node js?';
+// const answer = await chain.call({
+//     query:question
+// })
+
+// console.log(
+//     question,
+//     answer
+// )
