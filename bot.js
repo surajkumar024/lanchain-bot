@@ -1,11 +1,13 @@
 import {PDFLoader} from 'langchain/document_loaders/fs/pdf';
 import {RecursiveCharacterTextSplitter} from 'langchain/text_splitter';
-import {OpenAIEmbeddings} from 'langchain/embeddings/openai';
-import {HNSWLib} from 'langchain/vectorstores/hnswlib';
-import {OpenAI} from 'langchain/llms/openai';
-import {RetrievalQAChain} from 'langchain/chains';
-import {H} from 'langchain/llms/hf'
-import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
+// import {OpenAIEmbeddings} from 'langchain/embeddings/openai';
+// import {HNSWLib} from 'langchain/vectorstores/hnswlib';
+import {HNSWLib} from '@langchain/community/vectorstores/hnswlib';
+// import {OpenAI} from 'langchain/llms/openai';
+// import {RetrievalQAChain} from 'langchain/chains';
+// import {H} from 'langchain/llms/hf'
+// import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
+import {HuggingFaceInferenceEmbeddings} from "@langchain/community/embeddings/hf";
 import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
 import * as dotenv from 'dotenv'
 dotenv.config()
@@ -21,25 +23,31 @@ const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize:1000,
     chunkOverlap:90
 });
+// console.log('text splier :: ' , textSplitter)
 // creating chunks from pdf
 const splitDocs = await textSplitter.splitDocuments(docs);
-const embeddings = new OpenAIEmbeddings(); // OPENAPI
+// console.log('split docs : ' , splitDocs)
+// const embeddings = new OpenAIEmbeddings(); // OPENAPI
 
-// const embeddings = new HuggingFaceInferenceEmbeddings();
+const embeddings = new HuggingFaceInferenceEmbeddings();
+
+console.log('embadings :: ' , embeddings)
 
 const vectorStore = await HNSWLib.fromDocuments(
     splitDocs, embeddings
 )
 
-const vectoreStoreRetriver = vectorStore.asRetriever();
+console.log('vectorStore :: ' , vectorStore)
 
-const model = new OpenAI({
-    modelName:'gpt-3.5-turbo'
-}); //// FOR OPEN_API MODELS
+// const vectoreStoreRetriver = vectorStore.asRetriever();
 
-// const model = new HuggingFaceTransformersEmbeddings({
-//     modelName: "hkunlp/instructor-large",
-//   });
+// const model = new OpenAI({
+//     modelName:'gpt-3.5-turbo'
+// }); //// FOR OPEN_API MODELS
+
+const model = new HuggingFaceTransformersEmbeddings({
+    modelName: "hkunlp/instructor-large",
+  });
 
 
 const res = await model.embedQuery(
