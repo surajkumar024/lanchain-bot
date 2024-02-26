@@ -23,9 +23,9 @@ const textSplitter = new RecursiveCharacterTextSplitter({
 });
 // creating chunks from pdf
 const splitDocs = await textSplitter.splitDocuments(docs);
-// const embeddings = new OpenAIEmbeddings(); // OPENAPI
+const embeddings = new OpenAIEmbeddings(); // OPENAPI
 
-const embeddings = new HuggingFaceInferenceEmbeddings();
+// const embeddings = new HuggingFaceInferenceEmbeddings();
 
 const vectorStore = await HNSWLib.fromDocuments(
     splitDocs, embeddings
@@ -33,13 +33,13 @@ const vectorStore = await HNSWLib.fromDocuments(
 
 const vectoreStoreRetriver = vectorStore.asRetriever();
 
-// const model = new OpenAI({
-//     modelName:'gpt-3.5-turbo'
-// }); //// FOR OPEN_API MODELS
+const model = new OpenAI({
+    modelName:'gpt-3.5-turbo'
+}); //// FOR OPEN_API MODELS
 
-const model = new HuggingFaceTransformersEmbeddings({
-    modelName: "hkunlp/instructor-large",
-  });
+// const model = new HuggingFaceTransformersEmbeddings({
+//     modelName: "hkunlp/instructor-large",
+//   });
 
 
 const res = await model.embedQuery(
