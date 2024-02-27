@@ -37,7 +37,7 @@ const vectorStore = await HNSWLib.fromDocuments(
     splitDocs, embeddings
 )
 
-console.log('vectorStore :: ' , vectorStore)
+// console.log('vectorStore :: ' , vectorStore)
 
 // const vectoreStoreRetriver = vectorStore.asRetriever();
 
@@ -46,7 +46,7 @@ console.log('vectorStore :: ' , vectorStore)
 // }); //// FOR OPEN_API MODELS
 
 const model = new HuggingFaceTransformersEmbeddings({
-    modelName: "hkunlp/instructor-large",
+    modelName: "Mistral-7B-Instruct-v0.1-GGUF",
   });
 
 
